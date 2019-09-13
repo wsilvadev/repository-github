@@ -38,6 +38,7 @@ const Styles = StyleSheet.create({
     backgroundColor: '#fff',
     margin: 20,
     borderRadius: 5,
+    flexDirection: 'column',
     marginTop: 1,
   },
   //Segunda tela de Navegação
@@ -80,6 +81,9 @@ const Styles = StyleSheet.create({
   TextClosed: {
     margin: 5,
     textAlign: 'center',
+  },
+  TitleApiName: {
+    fontSize: 10,
   },
 });
 export default Styles;
