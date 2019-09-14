@@ -34,12 +34,38 @@ const Styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   ContainerFlexList: {
-    height: 70,
     backgroundColor: '#fff',
-    margin: 20,
+    height: 80,
     borderRadius: 5,
+    margin: 15,
+    marginTop: -1,
+    flexDirection: 'row',
+  },
+  RenderText: {
+    flex: 1,
     flexDirection: 'column',
-    marginTop: 1,
+    marginTop: 20,
+    width: '30%',
+  },
+  Imagen: {
+    width: 50,
+    height: 50,
+    borderRadius: 30,
+    margin: 10,
+    marginTop: 15,
+  },
+  Icon: {
+    width: 15,
+    height: 15,
+    margin: 10,
+    marginTop: 35,
+  },
+  TitleApiName: {
+    fontSize: 15,
+  },
+  ApiDescription: {
+    fontSize: 10,
+    opacity: 0.4,
   },
   //Segunda tela de Navegação
   //#########################################################################################
@@ -81,9 +107,6 @@ const Styles = StyleSheet.create({
   TextClosed: {
     margin: 5,
     textAlign: 'center',
-  },
-  TitleApiName: {
-    fontSize: 10,
   },
 });
 export default Styles;

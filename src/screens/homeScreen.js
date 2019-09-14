@@ -1,21 +1,27 @@
 import React, {Component} from 'react';
 import fetch from 'node-fetch';
-import {View, Text, TextInput, TouchableOpacity, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Image,
+} from 'react-native';
 import Style from '../styles/styles';
 import api from '../services/api';
 
 // import { Container } from './styles';
 
 export default class screens extends Component {
-  componentDidMount() {
-    this.loadObjets();
-  }
+  componentDidMount() {}
   state = {
     docs: [],
     text: '',
   };
   loadObjets = async () => {
-    const response = await api.get('/repos');
+    const text = this.state.text;
+    const response = await api.get(`/orgs/${text}/repos`);
     this.setState({docs: response.data});
     console.log(this.state.docs);
 
@@ -31,25 +37,40 @@ export default class screens extends Component {
       alignSelf: 'center',
     },
   };
-  renderItem = () => {
+  renderItem = ({item}) => {
     return (
       <View style={Style.ContainerFlexList}>
-        {this.state.docs.map(product => (
-          <View key={product.id}>
-            <Text key={product.id} style={Style.TitleApiName}>
-              {product.name}
-            </Text>
-            {/* <Text style={Style.ApiDescription}>{product.description}</Text> */}
-          </View>
-        ))}
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('ScreenNative')}
+        <Image
+          source={{
+            uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
+          }}
+          style={Style.Imagen}
         />
+        <View style={Style.RenderText}>
+          <Text
+            style={Style.TitleApiName}
+            numberOfLines={2}
+            ellipsizeMode={'middle'}>
+            {item.name}
+          </Text>
+          <Text
+            numberOfLines={2}
+            ellipsizeMode="middle"
+            style={Style.ApiDescription}>
+            {item.description}
+          </Text>
+        </View>
+        <TouchableOpacity
+          onPress={() =>
+            this.props.navigation.navigate('ScreenNative', {
+              name: item.name,
+              text: this.state.text.toString(),
+            })
+          }>
+          <Image source={require('../img/icon.png')} style={Style.Icon} />
+        </TouchableOpacity>
       </View>
     );
-  };
-  seachElement = () => {
-    const {text} = this.state.text;
   };
 
   render() {
@@ -61,9 +82,7 @@ export default class screens extends Component {
             style={Style.InputContainer}
             onChangeText={text => this.setState({text: text})}
           />
-          <TouchableOpacity
-            style={Style.ButtonInput}
-            onPress={() => this.seachElement}>
+          <TouchableOpacity style={Style.ButtonInput} onPress={this.loadObjets}>
             <Text style={Style.textButton}>+</Text>
           </TouchableOpacity>
         </View>
@@ -71,8 +90,9 @@ export default class screens extends Component {
         <View>
           <FlatList
             data={this.state.docs}
-            renderItem={item => this.renderItem(item)}
-            keyExtractor={item => item.name}
+            keyExtractor={item => item.id}
+            renderItem={this.renderItem}
+            onEndReachedThreshold={0.1}
           />
         </View>
       </View>
