@@ -24,7 +24,6 @@ export default class screens extends Component {
     const response = await api.get(`/orgs/${text}/repos`);
     this.setState({docs: response.data});
     console.log(this.state.docs);
-
     // const response = await fetch('  https://api.github.com/users/wsilvadev');
   };
   static navigationOptions = {

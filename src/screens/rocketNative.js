@@ -18,6 +18,13 @@ export default class rocketNative extends Component {
   }
   state = {
     issue: [],
+    protection: false,
+    opacity1: 1,
+    opacity2: 0.2,
+    opacity3: 0.2,
+    all: true,
+    close: false,
+    open: false,
   };
   static navigationOptions = ({navigation}) => {
     return {
@@ -37,8 +44,19 @@ export default class rocketNative extends Component {
     const response = await api.get(
       `https://api.github.com/repos/${orgs}/${repos}/issues`,
     );
-    this.setState({issue: response.data});
-    console.log(response);
+    const {all, close, open} = this.state;
+    if (all === true) {
+      this.setState({issue: response.data});
+      console.log(this.state.issue);
+    } else if (close === true) {
+      if (this.state.issue.state === 'closed') {
+        this.setState({issue: ''});
+      }
+    } else if (open === true) {
+      if (this.state.issue.state === 'open') {
+        this.setState({issue: response.data});
+      }
+    }
   };
   renderItem = ({item}) => {
     const {navigation} = this.props;
@@ -69,7 +87,7 @@ export default class rocketNative extends Component {
         </View>
         <TouchableOpacity
           onPress={() =>
-            Linking.openURL('https://github.com/repos/facebook/codemode/issues')
+            Linking.openURL(`https://github.com/repos/${orgs}/${repos}/issues`)
           }>
           <Image source={require('../img/icon.png')} style={Style.Icon} />
         </TouchableOpacity>
@@ -81,14 +99,68 @@ export default class rocketNative extends Component {
     return (
       <View style={Style.ContainerScreenThwo}>
         <View style={Style.Buttons}>
-          <TouchableOpacity style={Style.ButtonAll}>
-            <Text style={Style.TextAll}>Todas</Text>
+          <TouchableOpacity
+            style={Style.ButtonAll}
+            onPress={() =>
+              this.setState({
+                opacity1: 0.8,
+                opacity2: 0.2,
+                opacity3: 0.2,
+                all: true,
+                close: false,
+                open: false,
+              })
+            }>
+            <Text
+              style={{
+                margin: 5,
+                textAlign: 'center',
+                opacity: this.state.opacity1,
+              }}>
+              Todas
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Style.ButtonOpeneds}>
-            <Text style={Style.TextOpeneds}>Abertas</Text>
+          <TouchableOpacity
+            style={Style.ButtonOpeneds}
+            onPress={() =>
+              this.setState({
+                opacity1: 0.2,
+                opacity2: 0.8,
+                opacity3: 0.2,
+                open: true,
+                all: false,
+                close: false,
+              })
+            }>
+            <Text
+              style={{
+                margin: 5,
+                textAlign: 'center',
+                opacity: this.state.opacity2,
+              }}>
+              Abertas
+            </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={Style.ButtonCloseds}>
-            <Text style={Style.TextClosed}>Fechadas</Text>
+          <TouchableOpacity
+            style={Style.ButtonCloseds}
+            onPress={() =>
+              this.setState({
+                opacity1: 0.2,
+                opacity2: 0.2,
+                opacity3: 0.8,
+                close: true,
+                all: false,
+                open: false,
+              })
+            }>
+            <Text
+              style={{
+                margin: 5,
+                textAlign: 'center',
+                opacity: this.state.opacity3,
+              }}>
+              Fechadas
+            </Text>
           </TouchableOpacity>
         </View>
         <View>

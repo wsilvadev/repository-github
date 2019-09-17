@@ -100,10 +100,7 @@ const Styles = StyleSheet.create({
     margin: 5,
     textAlign: 'center',
   },
-  TextOpeneds: {
-    margin: 5,
-    textAlign: 'center',
-  },
+
   TextClosed: {
     margin: 5,
     textAlign: 'center',
