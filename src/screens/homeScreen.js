@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import fetch from 'node-fetch';
 import {
   View,
   Text,
@@ -10,22 +9,21 @@ import {
 } from 'react-native';
 import Style from '../styles/styles';
 import api from '../services/api';
-
 // import { Container } from './styles';
 
 export default class screens extends Component {
-  componentDidMount() {}
   state = {
     docs: [],
-    text: '',
+    OrgRepos: '',
   };
-  loadObjets = async () => {
-    const text = this.state.text;
-    const response = await api.get(`/orgs/${text}/repos`);
+  saveRepos = async () => {
+    const {OrgRepos} = this.state;
+    const response = await api.get(`/repos/${OrgRepos}`);
+
     this.setState({docs: response.data});
-    console.log(this.state.docs);
     // const response = await fetch('  https://api.github.com/users/wsilvadev');
   };
+
   static navigationOptions = {
     title: 'GitIssues',
     headerTitleStyle: {
@@ -37,6 +35,9 @@ export default class screens extends Component {
     },
   };
   renderItem = ({item}) => {
+    {
+      console.log(this.state.docs);
+    }
     return (
       <View style={Style.ContainerFlexList}>
         <Image
@@ -63,7 +64,7 @@ export default class screens extends Component {
           onPress={() =>
             this.props.navigation.navigate('ScreenNative', {
               name: item.name,
-              text: this.state.text.toString(),
+              textRepos: this.state.OrgRepos.toString(),
             })
           }>
           <Image source={require('../img/icon.png')} style={Style.Icon} />
@@ -79,19 +80,20 @@ export default class screens extends Component {
           <TextInput
             placeholder="Adicionar novo repositório"
             style={Style.InputContainer}
-            onChangeText={text => this.setState({text: text})}
+            onChangeText={Org_repos =>
+              this.setState({OrgRepos: Org_repos.toString()})
+            }
           />
-          <TouchableOpacity style={Style.ButtonInput} onPress={this.loadObjets}>
+          <TouchableOpacity style={Style.ButtonInput} onPress={this.saveRepos}>
             <Text style={Style.textButton}>+</Text>
           </TouchableOpacity>
         </View>
         <View style={Style.linhaView} />
         <View>
           <FlatList
-            data={this.state.docs}
-            keyExtractor={item => item.id}
+            data={[this.state.docs]}
+            keyExtractor={item => item.node_id}
             renderItem={this.renderItem}
-            onEndReachedThreshold={0.1}
           />
         </View>
       </View>

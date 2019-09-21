@@ -14,7 +14,7 @@ import {
 
 export default class rocketNative extends Component {
   componentDidMount() {
-    this.load();
+    this.loadIssueApi();
   }
   state = {
     issue: [],
@@ -25,6 +25,9 @@ export default class rocketNative extends Component {
     all: true,
     close: false,
     open: false,
+    values: '',
+    page: 1,
+    loading: false,
   };
   static navigationOptions = ({navigation}) => {
     return {
@@ -36,27 +39,51 @@ export default class rocketNative extends Component {
       },
     };
   };
-  load = async () => {
+  loadIssueApi = async () => {
     const {navigation} = this.props;
-    const repos = navigation.getParam('name');
-    const orgs = navigation.getParam('text');
+
+    const orgsRepos = navigation.getParam('textRepos');
 
     const response = await api.get(
-      `https://api.github.com/repos/${orgs}/${repos}/issues`,
+      `https://api.github.com/repos/${orgsRepos}/issues`,
     );
-    const {all, close, open} = this.state;
-    if (all === true) {
-      this.setState({issue: response.data});
-      console.log(this.state.issue);
-    } else if (close === true) {
-      if (this.state.issue.state === 'closed') {
-        this.setState({issue: ''});
-      }
-    } else if (open === true) {
-      if (this.state.issue.state === 'open') {
-        this.setState({issue: response.data});
-      }
-    }
+    this.setState({issue: response.data});
+    // const closed = response.data.map(product => {
+    //   if (product.state === 'closed') {
+    //     return this.setState({issue: product});
+    //   } else {
+    //     return this.setState({issue: product});
+    //   }
+    // });
+    // const open = response.data.map(product => {
+    //   if (product.state === 'open') {
+    //     return this.setState({issue: product});
+    //   } else {
+    //     return this.setState({issue: product});
+    //   }
+    // });
+    // const open = response.data.state.get('open');
+
+    // console.log(this.state.issue);
+
+    // switch (this.state.close || this.state.open || this.state.all) {
+    //   case this.state.close === true:
+    //     closed;
+    //     break;
+    //   case this.state.open === true:
+    //     open;
+    //     break;
+    //   case this.state.all === true:
+    //     this.setState({issue: response.data, values: 'sim'});
+    //     break;
+    // }
+    //   if (this.state.close === true && response.data.state === 'closed') {
+    //     return this.setState({values: 'funcionou'});
+    //   } else if (this.state.open === true && response.data.state === 'open') {
+    //     return this.setState({issue: response.data});
+    //   } else if (this.state.all === true) {
+    //     return this.setState({issue: response.data});
+    //   }
   };
   renderItem = ({item}) => {
     const {navigation} = this.props;
@@ -94,14 +121,20 @@ export default class rocketNative extends Component {
       </View>
     );
   };
-
+  // loadMore = () => {
+  //   if (!this.state.loading) return null;
+  //   return (
+  //   this.page = this.
+  //   this.load(page)
+  //   )
+  // }
   render() {
     return (
       <View style={Style.ContainerScreenThwo}>
         <View style={Style.Buttons}>
           <TouchableOpacity
             style={Style.ButtonAll}
-            onPress={() =>
+            onPress={() => {
               this.setState({
                 opacity1: 0.8,
                 opacity2: 0.2,
@@ -109,8 +142,9 @@ export default class rocketNative extends Component {
                 all: true,
                 close: false,
                 open: false,
-              })
-            }>
+              });
+              return this.loadIssueApi();
+            }}>
             <Text
               style={{
                 margin: 5,
@@ -122,7 +156,7 @@ export default class rocketNative extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={Style.ButtonOpeneds}
-            onPress={() =>
+            onPress={() => {
               this.setState({
                 opacity1: 0.2,
                 opacity2: 0.8,
@@ -130,8 +164,9 @@ export default class rocketNative extends Component {
                 open: true,
                 all: false,
                 close: false,
-              })
-            }>
+              });
+              return this.loadIssueApi();
+            }}>
             <Text
               style={{
                 margin: 5,
@@ -143,16 +178,17 @@ export default class rocketNative extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={Style.ButtonCloseds}
-            onPress={() =>
-              this.setState({
+            onPress={() => {
+              this.loadIssueApi();
+              return this.setState({
                 opacity1: 0.2,
                 opacity2: 0.2,
                 opacity3: 0.8,
                 close: true,
                 all: false,
                 open: false,
-              })
-            }>
+              });
+            }}>
             <Text
               style={{
                 margin: 5,
@@ -166,8 +202,10 @@ export default class rocketNative extends Component {
         <View>
           <FlatList
             data={this.state.issue}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.node_id}
             renderItem={this.renderItem}
+            // onRefresh={this.load}
+            // onEndReached={this.loadMore.bind(this)}
           />
         </View>
       </View>
