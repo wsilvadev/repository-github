@@ -9,18 +9,26 @@ import {
 } from 'react-native';
 import Style from '../styles/styles';
 import api from '../services/api';
+import {ScrollView} from 'react-native-gesture-handler';
+// import AsyncStorage from '@react-native-community/async-storage';
 // import { Container } from './styles';
 
 export default class screens extends Component {
-  state = {
-    docs: [],
-    OrgRepos: '',
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      docs: [],
+      position: 0,
+      OrgRepos: '',
+    };
+  }
   saveRepos = async () => {
-    const {OrgRepos} = this.state;
+    const {position, docs, OrgRepos} = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
+    docs[position] = {...response.data};
 
-    this.setState({docs: response.data});
+    this.setState({docs: [...this.state.docs], position: position + 1});
+    console.log(this.state.docs);
     // const response = await fetch('  https://api.github.com/users/wsilvadev');
   };
 
@@ -35,9 +43,6 @@ export default class screens extends Component {
     },
   };
   renderItem = ({item}) => {
-    {
-      console.log(this.state.docs);
-    }
     return (
       <View style={Style.ContainerFlexList}>
         <Image
@@ -64,7 +69,7 @@ export default class screens extends Component {
           onPress={() =>
             this.props.navigation.navigate('ScreenNative', {
               name: item.name,
-              textRepos: this.state.OrgRepos.toString(),
+              textRepos: item.full_name,
             })
           }>
           <Image source={require('../img/icon.png')} style={Style.Icon} />
@@ -89,13 +94,14 @@ export default class screens extends Component {
           </TouchableOpacity>
         </View>
         <View style={Style.linhaView} />
-        <View>
+        <ScrollView>
           <FlatList
-            data={[this.state.docs]}
+            data={this.state.docs}
             keyExtractor={item => item.node_id}
             renderItem={this.renderItem}
+            onEndReachedThreshold={0.1}
           />
-        </View>
+        </ScrollView>
       </View>
     );
   }
