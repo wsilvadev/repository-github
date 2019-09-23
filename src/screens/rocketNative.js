@@ -103,13 +103,13 @@ export default class rocketNative extends Component {
             style={Style.TitleApiName}
             numberOfLines={2}
             ellipsizeMode={'middle'}>
-            {item.user.login}
+            {item.title}
           </Text>
           <Text
             numberOfLines={3}
             ellipsizeMode="middle"
             style={Style.ApiDescription}>
-            {item.title}
+            {item.user.login}
           </Text>
         </View>
         <TouchableOpacity

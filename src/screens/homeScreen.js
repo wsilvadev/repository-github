@@ -10,10 +10,15 @@ import {
 import Style from '../styles/styles';
 import api from '../services/api';
 import {ScrollView} from 'react-native-gesture-handler';
-// import AsyncStorage from '@react-native-community/async-storage';
+import AsyncStorage from '@react-native-community/async-storage';
 // import { Container } from './styles';
 
 export default class screens extends Component {
+  async componentDidMouth() {
+    await AsyncStorage.geetItem('name');
+    await AsyncStorage.geetItem('id');
+    await AsyncStorage.geetItem('org');
+  }
   constructor(props) {
     super(props);
     this.state = {
@@ -25,10 +30,14 @@ export default class screens extends Component {
   saveRepos = async () => {
     const {position, docs, OrgRepos} = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
-    docs[position] = {...response.data};
+    docs[position] = response.data;
 
     this.setState({docs: [...this.state.docs], position: position + 1});
     console.log(this.state.docs);
+    AsyncStorage.setItem('name', docs.name);
+    AsyncStorage.setItem('id', docs.id);
+    AsyncStorage.setItem('org', docs.organization.login);
+
     // const response = await fetch('  https://api.github.com/users/wsilvadev');
   };
 
@@ -62,7 +71,7 @@ export default class screens extends Component {
             numberOfLines={2}
             ellipsizeMode="middle"
             style={Style.ApiDescription}>
-            {item.description}
+            {item.organization.login}
           </Text>
         </View>
         <TouchableOpacity
@@ -97,7 +106,7 @@ export default class screens extends Component {
         <ScrollView>
           <FlatList
             data={this.state.docs}
-            keyExtractor={item => item.node_id}
+            keyExtractor={item => item.id}
             renderItem={this.renderItem}
             onEndReachedThreshold={0.1}
           />
