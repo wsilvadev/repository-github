@@ -6,24 +6,33 @@ import {
   TouchableOpacity,
   FlatList,
   Image,
+  YellowBox,
 } from 'react-native';
 import Style from '../styles/styles';
 import api from '../services/api';
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
+YellowBox.ignoreWarnings([
+  'Warning: Async Storage has been extracted from react-native core',
+]);
+
 // import { Container } from './styles';
 
 export default class screens extends Component {
-  async componentDidMouth() {
-    await AsyncStorage.geetItem('name');
-    await AsyncStorage.geetItem('id');
-    await AsyncStorage.geetItem('org');
+  async componentDidMount() {
+    const {position, docs} = this.state;
+    const element = await AsyncStorage.getItem('orgRepos');
+    if (element !== null) {
+      const values = JSON.parse(element);
+      this.setState({docs: values, position: position + 1});
+      console.log(values);
+    }
   }
   constructor(props) {
     super(props);
     this.state = {
       docs: [],
-      position: 0,
+      position: -1,
       OrgRepos: '',
     };
   }
@@ -31,12 +40,10 @@ export default class screens extends Component {
     const {position, docs, OrgRepos} = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
     docs[position] = response.data;
-
     this.setState({docs: [...this.state.docs], position: position + 1});
+    await AsyncStorage.setItem('orgRepos', JSON.stringify(docs));
+
     console.log(this.state.docs);
-    AsyncStorage.setItem('name', docs.name);
-    AsyncStorage.setItem('id', docs.id);
-    AsyncStorage.setItem('org', docs.organization.login);
 
     // const response = await fetch('  https://api.github.com/users/wsilvadev');
   };
@@ -71,7 +78,7 @@ export default class screens extends Component {
             numberOfLines={2}
             ellipsizeMode="middle"
             style={Style.ApiDescription}>
-            {item.organization.login}
+            {/* {item.organization.login} */}
           </Text>
         </View>
         <TouchableOpacity
@@ -106,7 +113,7 @@ export default class screens extends Component {
         <ScrollView>
           <FlatList
             data={this.state.docs}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.node_id}
             renderItem={this.renderItem}
             onEndReachedThreshold={0.1}
           />
