@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
   View,
   Text,
@@ -10,8 +10,9 @@ import {
 } from 'react-native';
 import Style from '../styles/styles';
 import api from '../services/api';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
+import { async } from 'rxjs/internal/scheduler/async';
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
 ]);
@@ -20,34 +21,39 @@ YellowBox.ignoreWarnings([
 
 export default class screens extends Component {
   async componentDidMount() {
-    const {position, docs} = this.state;
-    const element = await AsyncStorage.getItem('orgRepos');
-    if (element !== null) {
-      const values = JSON.parse(element);
-      this.setState({docs: values, position: position + 1});
-      console.log(values);
-    }
+    this.renderRepos();
   }
   constructor(props) {
     super(props);
     this.state = {
       docs: [],
-      position: -1,
       OrgRepos: '',
     };
   }
   saveRepos = async () => {
-    const {position, docs, OrgRepos} = this.state;
+    const { docs, OrgRepos } = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
+    const position = docs.length;
+
     docs[position] = response.data;
-    this.setState({docs: [...this.state.docs], position: position + 1});
+    this.setState({
+      docs: [...docs],
+    });
     await AsyncStorage.setItem('orgRepos', JSON.stringify(docs));
 
     console.log(this.state.docs);
 
     // const response = await fetch('  https://api.github.com/users/wsilvadev');
   };
+  renderRepos = async () => {
+    const element = await AsyncStorage.getItem('orgRepos');
 
+    if (element !== null) {
+      const values = JSON.parse(element);
+      this.setState({ docs: values });
+      console.log(this.state.docs);
+    }
+  };
   static navigationOptions = {
     title: 'GitIssues',
     headerTitleStyle: {
@@ -58,7 +64,7 @@ export default class screens extends Component {
       alignSelf: 'center',
     },
   };
-  renderItem = ({item}) => {
+  renderItem = ({ item }) => {
     return (
       <View style={Style.ContainerFlexList}>
         <Image
@@ -78,7 +84,7 @@ export default class screens extends Component {
             numberOfLines={2}
             ellipsizeMode="middle"
             style={Style.ApiDescription}>
-            {/* {item.organization.login} */}
+            {item.organization.login}
           </Text>
         </View>
         <TouchableOpacity
@@ -102,7 +108,7 @@ export default class screens extends Component {
             placeholder="Adicionar novo repositório"
             style={Style.InputContainer}
             onChangeText={Org_repos =>
-              this.setState({OrgRepos: Org_repos.toString()})
+              this.setState({ OrgRepos: Org_repos.toString() })
             }
           />
           <TouchableOpacity style={Style.ButtonInput} onPress={this.saveRepos}>
