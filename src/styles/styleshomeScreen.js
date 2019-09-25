@@ -67,43 +67,5 @@ const Styles = StyleSheet.create({
     fontSize: 10,
     opacity: 0.4,
   },
-  //Segunda tela de Navegação
-  //#########################################################################################
-  ContainerScreenThwo: {
-    flex: 1,
-    backgroundColor: '#ddd',
-  },
-  Buttons: {
-    flexDirection: 'row',
-    margin: 20,
-    borderRadius: 5,
-    backgroundColor: '#CCC',
-  },
-  ButtonAll: {
-    backgroundColor: '#CCC',
-    flex: 1,
-    borderRadius: 5,
-  },
-  ButtonOpeneds: {
-    borderRadius: 5,
-
-    flex: 1,
-    backgroundColor: '#CCC',
-  },
-  ButtonCloseds: {
-    borderRadius: 5,
-
-    flex: 1,
-    backgroundColor: '#CCC',
-  },
-  TextAll: {
-    margin: 5,
-    textAlign: 'center',
-  },
-
-  TextClosed: {
-    margin: 5,
-    textAlign: 'center',
-  },
 });
 export default Styles;

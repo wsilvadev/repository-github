@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {
   View,
   Text,
@@ -8,11 +8,10 @@ import {
   Image,
   YellowBox,
 } from 'react-native';
-import Style from '../styles/styles';
+import Style from '../styles/styleshomeScreen';
 import api from '../services/api';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
-import { async } from 'rxjs/internal/scheduler/async';
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
 ]);
@@ -31,10 +30,9 @@ export default class screens extends Component {
     };
   }
   saveRepos = async () => {
-    const { docs, OrgRepos } = this.state;
+    const {docs, OrgRepos} = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
     const position = docs.length;
-
     docs[position] = response.data;
     this.setState({
       docs: [...docs],
@@ -50,7 +48,7 @@ export default class screens extends Component {
 
     if (element !== null) {
       const values = JSON.parse(element);
-      this.setState({ docs: values });
+      this.setState({docs: values});
       console.log(this.state.docs);
     }
   };
@@ -64,7 +62,7 @@ export default class screens extends Component {
       alignSelf: 'center',
     },
   };
-  renderItem = ({ item }) => {
+  renderItem = ({item}) => {
     return (
       <View style={Style.ContainerFlexList}>
         <Image
@@ -94,7 +92,13 @@ export default class screens extends Component {
               textRepos: item.full_name,
             })
           }>
-          <Image source={require('../img/icon.png')} style={Style.Icon} />
+          <Image
+            source={{
+              uri:
+                'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
+            }}
+            style={Style.Icon}
+          />
         </TouchableOpacity>
       </View>
     );
@@ -108,7 +112,7 @@ export default class screens extends Component {
             placeholder="Adicionar novo repositório"
             style={Style.InputContainer}
             onChangeText={Org_repos =>
-              this.setState({ OrgRepos: Org_repos.toString() })
+              this.setState({OrgRepos: Org_repos.toString()})
             }
           />
           <TouchableOpacity style={Style.ButtonInput} onPress={this.saveRepos}>

@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import api from '../services/api';
-import Style from '../styles/styles';
+import Style from '../styles/styleRocketNative';
 import {
   View,
   TouchableOpacity,
@@ -14,21 +14,13 @@ import {
 
 export default class rocketNative extends Component {
   componentDidMount() {
-    this.loadIssueApi();
+    this.loadAllIssueApi();
   }
   state = {
     issue: [],
-    protection: false,
     opacity1: 1,
-    opacity2: 0.2,
-    opacity3: 0.2,
-    all: true,
-    close: false,
-    open: false,
-    values: '',
-    page: 1,
-    loading: false,
   };
+
   static navigationOptions = ({navigation}) => {
     return {
       title: navigation.getParam('name'),
@@ -39,7 +31,7 @@ export default class rocketNative extends Component {
       },
     };
   };
-  loadIssueApi = async () => {
+  loadAllIssueApi = async () => {
     const {navigation} = this.props;
 
     const orgsRepos = navigation.getParam('textRepos');
@@ -47,43 +39,42 @@ export default class rocketNative extends Component {
     const response = await api.get(
       `https://api.github.com/repos/${orgsRepos}/issues`,
     );
-    this.setState({issue: response.data});
-    // const closed = response.data.map(product => {
-    //   if (product.state === 'closed') {
-    //     return this.setState({issue: product});
-    //   } else {
-    //     return this.setState({issue: product});
-    //   }
-    // });
-    // const open = response.data.map(product => {
-    //   if (product.state === 'open') {
-    //     return this.setState({issue: product});
-    //   } else {
-    //     return this.setState({issue: product});
-    //   }
-    // });
-    // const open = response.data.state.get('open');
+    this.setState({
+      issue: response.data,
+      opacity1: 0.8,
+      opacity2: 0.2,
+      opacity3: 0.2,
+    });
+  };
+  loadOpenIssuesApi = async () => {
+    const {navigation} = this.props;
 
-    // console.log(this.state.issue);
+    const orgsRepos = navigation.getParam('textRepos');
 
-    // switch (this.state.close || this.state.open || this.state.all) {
-    //   case this.state.close === true:
-    //     closed;
-    //     break;
-    //   case this.state.open === true:
-    //     open;
-    //     break;
-    //   case this.state.all === true:
-    //     this.setState({issue: response.data, values: 'sim'});
-    //     break;
-    // }
-    //   if (this.state.close === true && response.data.state === 'closed') {
-    //     return this.setState({values: 'funcionou'});
-    //   } else if (this.state.open === true && response.data.state === 'open') {
-    //     return this.setState({issue: response.data});
-    //   } else if (this.state.all === true) {
-    //     return this.setState({issue: response.data});
-    //   }
+    const response = await api.get(
+      `https://api.github.com/repos/${orgsRepos}/issues?state=open`,
+    );
+    this.setState({
+      issue: response.data,
+      opacity1: 0.2,
+      opacity2: 0.8,
+      opacity3: 0.2,
+    });
+  };
+  loadClosedIssuesApi = async () => {
+    const {navigation} = this.props;
+
+    const orgsRepos = navigation.getParam('textRepos');
+
+    const response = await api.get(
+      `https://api.github.com/repos/${orgsRepos}/issues?state=closed`,
+    );
+    this.setState({
+      issue: response.data,
+      opacity1: 0.2,
+      opacity2: 0.2,
+      opacity3: 0.8,
+    });
   };
   renderItem = ({item}) => {
     const {navigation} = this.props;
@@ -116,35 +107,25 @@ export default class rocketNative extends Component {
           onPress={() =>
             Linking.openURL(`https://github.com/repos/${orgs}/${repos}/issues`)
           }>
-          <Image source={require('../img/icon.png')} style={Style.Icon} />
+          <Image
+            source={{
+              uri:
+                'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
+            }}
+            style={Style.Icon}
+          />
         </TouchableOpacity>
       </View>
     );
   };
-  // loadMore = () => {
-  //   if (!this.state.loading) return null;
-  //   return (
-  //   this.page = this.
-  //   this.load(page)
-  //   )
-  // }
+
   render() {
     return (
       <View style={Style.ContainerScreenThwo}>
         <View style={Style.Buttons}>
           <TouchableOpacity
             style={Style.ButtonAll}
-            onPress={() => {
-              this.setState({
-                opacity1: 0.8,
-                opacity2: 0.2,
-                opacity3: 0.2,
-                all: true,
-                close: false,
-                open: false,
-              });
-              return this.loadIssueApi();
-            }}>
+            onPress={this.loadAllIssueApi.bind(this)}>
             <Text
               style={{
                 margin: 5,
@@ -156,17 +137,7 @@ export default class rocketNative extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={Style.ButtonOpeneds}
-            onPress={() => {
-              this.setState({
-                opacity1: 0.2,
-                opacity2: 0.8,
-                opacity3: 0.2,
-                open: true,
-                all: false,
-                close: false,
-              });
-              return this.loadIssueApi();
-            }}>
+            onPress={this.loadOpenIssuesApi.bind(this)}>
             <Text
               style={{
                 margin: 5,
@@ -178,17 +149,7 @@ export default class rocketNative extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={Style.ButtonCloseds}
-            onPress={() => {
-              this.loadIssueApi();
-              return this.setState({
-                opacity1: 0.2,
-                opacity2: 0.2,
-                opacity3: 0.8,
-                close: true,
-                all: false,
-                open: false,
-              });
-            }}>
+            onPress={this.loadClosedIssuesApi.bind(this)}>
             <Text
               style={{
                 margin: 5,
@@ -204,8 +165,6 @@ export default class rocketNative extends Component {
             data={this.state.issue}
             keyExtractor={item => item.node_id}
             renderItem={this.renderItem}
-            // onRefresh={this.load}
-            // onEndReached={this.loadMore.bind(this)}
           />
         </View>
       </View>
