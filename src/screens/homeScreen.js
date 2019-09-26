@@ -64,34 +64,35 @@ export default class screens extends Component {
   };
   renderItem = ({item}) => {
     return (
-      <View style={Style.ContainerFlexList}>
-        <Image
-          source={{
-            uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
-          }}
-          style={Style.Imagen}
-        />
-        <View style={Style.RenderText}>
-          <Text
-            style={Style.TitleApiName}
-            numberOfLines={2}
-            ellipsizeMode={'middle'}>
-            {item.name}
-          </Text>
-          <Text
-            numberOfLines={2}
-            ellipsizeMode="middle"
-            style={Style.ApiDescription}>
-            {item.organization.login}
-          </Text>
-        </View>
+      <View>
         <TouchableOpacity
+          style={Style.ContainerFlexList}
           onPress={() =>
             this.props.navigation.navigate('ScreenNative', {
               name: item.name,
               textRepos: item.full_name,
             })
           }>
+          <Image
+            source={{
+              uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
+            }}
+            style={Style.Imagen}
+          />
+          <View style={Style.RenderText}>
+            <Text
+              style={Style.TitleApiName}
+              numberOfLines={2}
+              ellipsizeMode={'middle'}>
+              {item.name}
+            </Text>
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="middle"
+              style={Style.ApiDescription}>
+              {item.organization.login}
+            </Text>
+          </View>
           <Image
             source={{
               uri:

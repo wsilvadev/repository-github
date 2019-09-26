@@ -79,34 +79,39 @@ export default class rocketNative extends Component {
   renderItem = ({item}) => {
     const {navigation} = this.props;
 
-    const repos = navigation.getParam('name');
-    const orgs = navigation.getParam('text');
+    const orgsRepos = navigation.getParam('textRepos');
     return (
-      <View style={Style.ContainerFlexList}>
-        <Image
-          source={{
-            uri: `https://avatars3.githubusercontent.com/u/${item.user.id}?v=4`,
-          }}
-          style={Style.Imagen}
-        />
-        <View style={Style.RenderText}>
-          <Text
-            style={Style.TitleApiName}
-            numberOfLines={2}
-            ellipsizeMode={'middle'}>
-            {item.title}
-          </Text>
-          <Text
-            numberOfLines={3}
-            ellipsizeMode="middle"
-            style={Style.ApiDescription}>
-            {item.user.login}
-          </Text>
-        </View>
+      <View>
         <TouchableOpacity
+          style={Style.ContainerFlexList}
           onPress={() =>
-            Linking.openURL(`https://github.com/repos/${orgs}/${repos}/issues`)
+            Linking.openURL(`https://github.com/${orgsRepos}/issues/${
+              item.number
+            }
+`)
           }>
+          <Image
+            source={{
+              uri: `https://avatars3.githubusercontent.com/u/${
+                item.user.id
+              }?v=4`,
+            }}
+            style={Style.Imagen}
+          />
+          <View style={Style.RenderText}>
+            <Text
+              style={Style.TitleApiName}
+              numberOfLines={2}
+              ellipsizeMode={'middle'}>
+              {item.title}
+            </Text>
+            <Text
+              numberOfLines={3}
+              ellipsizeMode="middle"
+              style={Style.ApiDescription}>
+              {item.user.login}
+            </Text>
+          </View>
           <Image
             source={{
               uri:
