@@ -12,11 +12,13 @@ import Style from '../styles/styleshomeScreen';
 import api from '../services/api';
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
+import Swipeout from 'react-native-swipeout';
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
+  'Warning: componentWillMount is deprecated',
+  'Warning: componentWillUpdate is deprecated',
+  'Warning: componentWillReceiveProps is deprecated',
 ]);
-
-// import { Container } from './styles';
 
 export default class screens extends Component {
   async componentDidMount() {
@@ -29,19 +31,17 @@ export default class screens extends Component {
       OrgRepos: '',
     };
   }
+
   saveRepos = async () => {
     const {docs, OrgRepos} = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
-    const position = docs.length;
-    docs[position] = response.data;
+    const newDocs = docs.slice();
+    newDocs.push(response.data);
     this.setState({
-      docs: [...docs],
+      docs: newDocs,
     });
-    await AsyncStorage.setItem('orgRepos', JSON.stringify(docs));
-
-    console.log(this.state.docs);
-
-    // const response = await fetch('  https://api.github.com/users/wsilvadev');
+    await AsyncStorage.setItem('orgRepos', JSON.stringify(newDocs));
+    console.log(newDocs);
   };
   renderRepos = async () => {
     const element = await AsyncStorage.getItem('orgRepos');
@@ -49,7 +49,6 @@ export default class screens extends Component {
     if (element !== null) {
       const values = JSON.parse(element);
       this.setState({docs: values});
-      console.log(this.state.docs);
     }
   };
   static navigationOptions = {
@@ -62,45 +61,74 @@ export default class screens extends Component {
       alignSelf: 'center',
     },
   };
+  removeItem = async id => {
+    this.setState({docs: this.state.docs.filter(item => item.id !== id)});
+    await AsyncStorage.removeItem(JSON.stringify(id));
+    await AsyncStorage.setItem('orgRepos', JSON.stringify(this.state.docs));
+
+    console.log(id);
+  };
   renderItem = ({item}) => {
+    console.log(item);
+
+    let swiiperoutBtns = [
+      {
+        text: 'deleter',
+        onPress: () => this.removeItem(item.id),
+        backgroundColor: 'tranparent',
+        component: (
+          <View>
+            <Image
+              source={{
+                uri:
+                  'https://cdn.icon-icons.com/icons2/868/PNG/512/trash_bin_icon-icons.com_67981.png',
+              }}
+              style={Style.IconTash}
+            />
+          </View>
+        ),
+      },
+    ];
     return (
       <View>
-        <TouchableOpacity
-          style={Style.ContainerFlexList}
-          onPress={() =>
-            this.props.navigation.navigate('ScreenNative', {
-              name: item.name,
-              textRepos: item.full_name,
-            })
-          }>
-          <Image
-            source={{
-              uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
-            }}
-            style={Style.Imagen}
-          />
-          <View style={Style.RenderText}>
-            <Text
-              style={Style.TitleApiName}
-              numberOfLines={2}
-              ellipsizeMode={'middle'}>
-              {item.name}
-            </Text>
-            <Text
-              numberOfLines={2}
-              ellipsizeMode="middle"
-              style={Style.ApiDescription}>
-              {item.organization.login}
-            </Text>
-          </View>
-          <Image
-            source={{
-              uri:
-                'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
-            }}
-            style={Style.Icon}
-          />
-        </TouchableOpacity>
+        <Swipeout right={swiiperoutBtns}>
+          <TouchableOpacity
+            style={Style.ContainerFlexList}
+            onPress={() =>
+              this.props.navigation.navigate('ScreenNative', {
+                name: item.name,
+                textRepos: item.full_name,
+              })
+            }>
+            <Image
+              source={{
+                uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
+              }}
+              style={Style.Imagen}
+            />
+            <View style={Style.RenderText}>
+              <Text
+                style={Style.TitleApiName}
+                numberOfLines={2}
+                ellipsizeMode={'middle'}>
+                {item.name}
+              </Text>
+              <Text
+                numberOfLines={2}
+                ellipsizeMode="middle"
+                style={Style.ApiDescription}>
+                {item.organization.login}
+              </Text>
+            </View>
+            <Image
+              source={{
+                uri:
+                  'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
+              }}
+              style={Style.Icon}
+            />
+          </TouchableOpacity>
+        </Swipeout>
       </View>
     );
   };

@@ -54,6 +54,11 @@ const Styles = StyleSheet.create({
     margin: 10,
     marginTop: 15,
   },
+  IconTash: {
+    width: 50,
+    height: 50,
+    margin: 15,
+  },
   Icon: {
     width: 15,
     height: 15,
