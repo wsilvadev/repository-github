@@ -13,6 +13,7 @@ import api from '../services/api';
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Swipeout from 'react-native-swipeout';
+import {async} from 'rxjs/internal/scheduler/async';
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
   'Warning: componentWillMount is deprecated',
@@ -46,9 +47,37 @@ export default class screens extends Component {
   renderRepos = async () => {
     const element = await AsyncStorage.getItem('orgRepos');
 
-    if (element !== null) {
-      const values = JSON.parse(element);
+    const values = JSON.parse(element);
+
+    if (values.length >= 0) {
       this.setState({docs: values});
+    }
+  };
+  LoadEnpty = () => {
+    if (this.state.docs.length <= 0) {
+      return (
+        <View style={Style.EmptyView}>
+          <Image
+            style={Style.EmptyToShow}
+            source={{
+              uri:
+                'https://cdn.icon-icons.com/icons2/1157/PNG/512/1487086345-cross_81577.png',
+            }}
+          />
+          <Text style={Style.TextDescription}>
+            You need add Organization and Repositorie
+          </Text>
+        </View>
+      );
+    } else {
+      return (
+        <FlatList
+          data={this.state.docs}
+          keyExtractor={item => item.node_id}
+          renderItem={this.renderItem}
+          onEndReachedThreshold={0.1}
+        />
+      );
     }
   };
   static navigationOptions = {
@@ -138,7 +167,7 @@ export default class screens extends Component {
       <View style={Style.ContainerMain}>
         <View style={Style.ContainerInput}>
           <TextInput
-            placeholder="Adicionar novo repositório"
+            placeholder="Organizaton/Repositorie"
             style={Style.InputContainer}
             onChangeText={Org_repos =>
               this.setState({OrgRepos: Org_repos.toString()})
@@ -149,14 +178,8 @@ export default class screens extends Component {
           </TouchableOpacity>
         </View>
         <View style={Style.linhaView} />
-        <ScrollView>
-          <FlatList
-            data={this.state.docs}
-            keyExtractor={item => item.node_id}
-            renderItem={this.renderItem}
-            onEndReachedThreshold={0.1}
-          />
-        </ScrollView>
+
+        <View>{this.LoadEnpty()}</View>
       </View>
     );
   }

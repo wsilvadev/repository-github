@@ -47,6 +47,17 @@ const Styles = StyleSheet.create({
     marginTop: 20,
     width: '30%',
   },
+  EmptyView: {
+    alignItems: 'center',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    marginTop: 100,
+  },
+  EmptyToShow: {
+    width: 100,
+    height: 100,
+    opacity: 0.3,
+  },
   Imagen: {
     width: 50,
     height: 50,
@@ -58,6 +69,11 @@ const Styles = StyleSheet.create({
     width: 50,
     height: 50,
     margin: 15,
+  },
+  TextDescription: {
+    fontSize: 15,
+    opacity: 0.6,
+    margin: 10,
   },
   Icon: {
     width: 15,
