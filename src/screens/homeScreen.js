@@ -9,11 +9,10 @@ import {
   YellowBox,
 } from 'react-native';
 import Style from '../styles/styleshomeScreen';
+import {PacmanIndicator} from 'react-native-indicators';
 import api from '../services/api';
-import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Swipeout from 'react-native-swipeout';
-import {async} from 'rxjs/internal/scheduler/async';
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
   'Warning: componentWillMount is deprecated',
@@ -30,16 +29,20 @@ export default class screens extends Component {
     this.state = {
       docs: [],
       OrgRepos: '',
+      loading: false,
     };
   }
 
   saveRepos = async () => {
+    this.setState({loading: true});
     const {docs, OrgRepos} = this.state;
     const response = await api.get(`/repos/${OrgRepos}`);
     const newDocs = docs.slice();
     newDocs.push(response.data);
+
     this.setState({
       docs: newDocs,
+      loading: false,
     });
     await AsyncStorage.setItem('orgRepos', JSON.stringify(newDocs));
     console.log(newDocs);
@@ -54,7 +57,9 @@ export default class screens extends Component {
     }
   };
   LoadEnpty = () => {
-    if (this.state.docs.length <= 0) {
+    if (this.state.loading === true) {
+      return <PacmanIndicator />;
+    } else if (this.state.docs.length <= 0) {
       return (
         <View style={Style.EmptyView}>
           <Image
@@ -65,7 +70,8 @@ export default class screens extends Component {
             }}
           />
           <Text style={Style.TextDescription}>
-            You need add Organization and Repositorie
+            You need to add Organizatoin and Repository in the following format
+            "organization-name/Repository-name"i.e:facebook/react
           </Text>
         </View>
       );
@@ -110,7 +116,7 @@ export default class screens extends Component {
             <Image
               source={{
                 uri:
-                  'https://cdn.icon-icons.com/icons2/868/PNG/512/trash_bin_icon-icons.com_67981.png',
+                  'https://cdn.icon-icons.com/icons2/1572/PNG/512/3592821-garbage-can-general-office-recycle-bin-rubbish-bin-trash-bin-trash-can_107760.png',
               }}
               style={Style.IconTash}
             />
@@ -167,13 +173,13 @@ export default class screens extends Component {
       <View style={Style.ContainerMain}>
         <View style={Style.ContainerInput}>
           <TextInput
-            placeholder="Organizaton/Repositorie"
+            placeholder="Organizaton/Repository"
             style={Style.InputContainer}
             onChangeText={Org_repos =>
               this.setState({OrgRepos: Org_repos.toString()})
             }
           />
-          <TouchableOpacity style={Style.ButtonInput} onPress={this.saveRepos}>
+          <TouchableOpacity onPress={this.saveRepos.bind(this)}>
             <Text style={Style.textButton}>+</Text>
           </TouchableOpacity>
         </View>

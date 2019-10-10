@@ -5295,6 +5295,13 @@ react-native-gesture-handler@^1.4.1:
     invariant "^2.2.4"
     prop-types "^15.7.2"
 
+react-native-indicators@^0.16.0:
+  version "0.16.0"
+  resolved "https://registry.yarnpkg.com/react-native-indicators/-/react-native-indicators-0.16.0.tgz#7e672fb8c213c471db1fac1bef89625d4261cc1a"
+  integrity sha512-KFNwJ+kSY7UExx6xhc0MweLRMHeFV4WfD+rdlAJH2l/AW8ft8uSnLNJgBGuB7pZ4KT+CEW/xMxMD8tVMU421Bg==
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-safe-area-view@^0.14.1:
   version "0.14.8"
   resolved "https://registry.yarnpkg.com/react-native-safe-area-view/-/react-native-safe-area-view-0.14.8.tgz#ef33c46ff8164ae77acad48c3039ec9c34873e5b"

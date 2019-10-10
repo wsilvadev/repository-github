@@ -1,4 +1,5 @@
 import {StyleSheet} from 'react-native';
+import {black} from 'ansi-colors';
 
 const Styles = StyleSheet.create({
   ContainerMain: {
@@ -7,12 +8,13 @@ const Styles = StyleSheet.create({
   },
   ContainerInput: {
     flexDirection: 'row',
+    alignItems: 'center',
   },
   InputContainer: {
     backgroundColor: 'white',
-    margin: 20,
-    height: 40,
-    width: '80%',
+    margin: 15,
+    height: 45,
+    width: '82%',
     fontSize: 15,
     borderRadius: 5,
     paddingLeft: 15,
@@ -25,12 +27,9 @@ const Styles = StyleSheet.create({
     margin: 20,
     marginTop: -3,
   },
-  ButtonInput: {
-    backgroundColor: '#ddd',
-    marginTop: 18,
-  },
+
   textButton: {
-    fontSize: 30,
+    fontSize: 45,
     fontWeight: 'bold',
   },
   ContainerFlexList: {
@@ -66,14 +65,14 @@ const Styles = StyleSheet.create({
     marginTop: 15,
   },
   IconTash: {
-    width: 50,
-    height: 50,
-    margin: 15,
+    width: 42,
+    height: 42,
+    margin: 18,
   },
   TextDescription: {
     fontSize: 15,
     opacity: 0.6,
-    margin: 10,
+    paddingLeft: 20,
   },
   Icon: {
     width: 15,
