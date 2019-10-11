@@ -125,46 +125,44 @@ export default class screens extends Component {
       },
     ];
     return (
-      <View>
-        <Swipeout right={swiiperoutBtns}>
-          <TouchableOpacity
-            style={Style.ContainerFlexList}
-            onPress={() =>
-              this.props.navigation.navigate('ScreenNative', {
-                name: item.name,
-                textRepos: item.full_name,
-              })
-            }>
-            <Image
-              source={{
-                uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
-              }}
-              style={Style.Imagen}
-            />
-            <View style={Style.RenderText}>
-              <Text
-                style={Style.TitleApiName}
-                numberOfLines={2}
-                ellipsizeMode={'middle'}>
-                {item.name}
-              </Text>
-              <Text
-                numberOfLines={2}
-                ellipsizeMode="middle"
-                style={Style.ApiDescription}>
-                {item.organization.login}
-              </Text>
-            </View>
-            <Image
-              source={{
-                uri:
-                  'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
-              }}
-              style={Style.Icon}
-            />
-          </TouchableOpacity>
-        </Swipeout>
-      </View>
+      <Swipeout right={swiiperoutBtns}>
+        <TouchableOpacity
+          style={Style.ContainerFlexList}
+          onPress={() =>
+            this.props.navigation.navigate('ScreenNative', {
+              name: item.name,
+              textRepos: item.full_name,
+            })
+          }>
+          <Image
+            source={{
+              uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
+            }}
+            style={Style.Imagen}
+          />
+          <View style={Style.RenderText}>
+            <Text
+              style={Style.TitleApiName}
+              numberOfLines={2}
+              ellipsizeMode={'middle'}>
+              {item.name}
+            </Text>
+            <Text
+              numberOfLines={2}
+              ellipsizeMode="middle"
+              style={Style.ApiDescription}>
+              {item.organization.login}
+            </Text>
+          </View>
+          <Image
+            source={{
+              uri:
+                'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
+            }}
+            style={Style.Icon}
+          />
+        </TouchableOpacity>
+      </Swipeout>
     );
   };
 
