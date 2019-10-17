@@ -8,28 +8,28 @@ import {
   FlatList,
   Image,
   Linking,
+  YellowBox,
 } from 'react-native';
-import {PacmanIndicator} from 'react-native-indicators';
+import {DotIndicator} from 'react-native-indicators';
 import {async} from 'rxjs/internal/scheduler/async';
+YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
 
 // import { Container } from './styles';
 
 export default class rocketNative extends Component {
   componentDidMount() {
-    this.loadAllIssueApi(this.state.page);
+    this.loadAllIssueApi();
   }
   state = {
-    issue: [],
     issueOpen: [],
     issueClosed: [],
+    issue: [],
     page: 1,
-    pageOpen: 1,
     pageClosed: 1,
+    pageOpen: 1,
     opacity1: 1,
     loading: false,
-    bt1: false,
-    bt2: false,
-    bt3: false,
+    states: 'all',
   };
 
   static navigationOptions = ({navigation}) => {
@@ -47,70 +47,74 @@ export default class rocketNative extends Component {
 
     const orgsRepos = navigation.getParam('textRepos');
     this.setState({loading: true});
-    const response = await api.get(
-      `https://api.github.com/repos/${orgsRepos}/issues?page=${page}`,
-    );
-    const listItems = this.state.issue;
-    const data = listItems.concat(response.data);
+    await api
+      .get(
+        `https://api.github.com/repos/${orgsRepos}/issues?page=${page}&state=all`,
+      )
+      .then(res => {
+        const listItems = this.state.issue;
+        const data = listItems.concat(res.data);
 
-    this.setState({
-      issue: data,
-      opacity1: 0.8,
-      opacity2: 0.2,
-      opacity3: 0.2,
-      bt1: true,
-      bt2: false,
-      bt3: false,
-      loading: false,
-      page,
-    });
+        this.setState({
+          issue: data.filter(item => item.id !== this.state.issue.id),
+          loading: false,
+          page,
+          opacity1: 0.8,
+          opacity2: 0.2,
+          opacity3: 0.2,
+        });
+      })
+      .catch(error => console.warn(error));
   };
-  loadOpenIssuesApi = async (pageOpen = 1) => {
+  loadOpenIssue = async (pageOpen = 1) => {
     const {navigation} = this.props;
-    this.setState({loading: true});
 
     const orgsRepos = navigation.getParam('textRepos');
-
-    const response = await api.get(
-      `https://api.github.com/repos/${orgsRepos}/issues?state=open&page=${pageOpen}`,
-    );
-    const listItems = this.state.issueOpen;
-    const data = listItems.concat(response.data);
-    this.setState({
-      issueOpen: data,
-      loading: false,
-      opacity1: 0.2,
-      opacity2: 0.8,
-      opacity3: 0.2,
-      bt1: false,
-      bt2: true,
-      bt3: false,
-      pageOpen,
-    });
-    console.log(this.state.issueOpen.length);
-  };
-  loadClosedIssuesApi = async (pageClosed = 1) => {
-    const {navigation} = this.props;
     this.setState({loading: true});
+    await api
+      .get(
+        `https://api.github.com/repos/${orgsRepos}/issues?page=${pageOpen}&state=open`,
+      )
+      .then(res => {
+        const listItems = this.state.issueOpen;
+        const data = listItems.concat(res.data);
+
+        this.setState({
+          issueOpen: data.filter(item => item.id !== this.state.issueOpen.id),
+          loading: false,
+          pageOpen,
+          opacity1: 0.2,
+          opacity2: 0.8,
+          opacity3: 0.2,
+        });
+      })
+      .catch(error => console.warn(error));
+  };
+  loadClosedIssue = async (pageClosed = 1) => {
+    const {navigation} = this.props;
 
     const orgsRepos = navigation.getParam('textRepos');
+    this.setState({loading: true});
+    await api
+      .get(
+        `https://api.github.com/repos/${orgsRepos}/issues?page=${pageClosed}&state=closed`,
+      )
+      .then(res => {
+        const listItems = this.state.issueClosed;
+        const data = listItems.concat(res.data);
 
-    const response = await api.get(
-      `https://api.github.com/repos/${orgsRepos}/issues?state=closed&page=${pageClosed}`,
-    );
-    const listItems = this.state.issueClosed;
-    const data = listItems.concat(response.data);
-    this.setState({
-      issueClosed: data,
-      loading: false,
-      opacity1: 0.2,
-      opacity2: 0.2,
-      opacity3: 0.8,
-      bt1: false,
-      bt2: false,
-      bt3: true,
-      pageClosed,
-    });
+        this.setState({
+          issueClosed: data.filter(
+            item => item.id !== this.state.issueClosed.id,
+          ),
+          loading: false,
+          pageClosed,
+          opacity1: 0.2,
+          opacity2: 0.2,
+          opacity3: 0.8,
+        });
+      })
+      .catch(error => console.warn(error));
   };
   renderItem = ({item}) => {
     const {navigation} = this.props;
@@ -160,58 +164,60 @@ export default class rocketNative extends Component {
       </View>
     );
   };
-  loadMore = () => {
-    const {page, pageOpen, pageClosed, bt1, bt2, bt3} = this.state;
-    const pages = page + 1;
+  loadMoreOpen = () => {
+    const {pageOpen} = this.state;
+
     const pageOpens = pageOpen + 1;
+    this.loadOpenIssue(pageOpens);
+  };
+  loadMoreClosed = () => {
+    const {pageClosed} = this.state;
     const pageCloseds = pageClosed + 1;
-    if (bt1 === true) {
-      return this.loadAllIssueApi(pages);
-    } else if (bt2 === true) {
-      return this.loadOpenIssuesApi(pageOpens);
-    } else if (bt3 === true) {
-      return this.loadClosedIssuesApi(pageCloseds);
-    }
+    this.loadClosedIssue(pageCloseds);
+  };
+  loadMoreAll = () => {
+    const {page} = this.state;
+    const pages = page + 1;
+    this.loadAllIssueApi(pages);
   };
   loadIssue = () => {
-    if (this.state.loading === true) {
+    const {loading, issue} = this.state;
+    if (loading === true && issue.length <= 0) {
       return (
         <View>
-          <PacmanIndicator />
+          <DotIndicator size={10} color={'#F87d493e'} />
         </View>
       );
-    } else {
-      if (this.state.bt1 === true) {
-        return (
-          <FlatList
-            data={this.state.issue}
-            keyExtractor={item => item.node_id}
-            renderItem={this.renderItem}
-            onEndReached={this.loadMore}
-            onEndReachedThreshold={0.4}
-          />
-        );
-      } else if (this.state.bt2 === true) {
-        return (
-          <FlatList
-            data={this.state.issueOpen}
-            keyExtractor={item => item.node_id}
-            renderItem={this.renderItem}
-            onEndReached={this.loadMore}
-            onEndReachedThreshold={0.4}
-          />
-        );
-      } else if (this.state.bt3 === true) {
-        return (
-          <FlatList
-            data={this.state.issueClosed}
-            keyExtractor={item => item.node_id}
-            renderItem={this.renderItem}
-            onEndReached={this.loadMore}
-            onEndReachedThreshold={0.4}
-          />
-        );
-      }
+    } else if (this.state.states === 'all') {
+      return (
+        <FlatList
+          data={this.state.issue}
+          keyExtractor={item => item.node_id}
+          renderItem={this.renderItem}
+          onEndReached={this.loadMoreAll}
+          onEndReachedThreshold={0.4}
+        />
+      );
+    } else if (this.state.states === 'open') {
+      return (
+        <FlatList
+          data={this.state.issueOpen}
+          keyExtractor={item => item.node_id}
+          renderItem={this.renderItem}
+          onEndReached={this.loadMoreOpen}
+          onEndReachedThreshold={0.4}
+        />
+      );
+    } else if (this.state.states === 'closed') {
+      return (
+        <FlatList
+          data={this.state.issueClosed}
+          keyExtractor={item => item.node_id}
+          renderItem={this.renderItem}
+          onEndReached={this.loadMoreClosed}
+          onEndReachedThreshold={0.4}
+        />
+      );
     }
   };
   render() {
@@ -220,7 +226,12 @@ export default class rocketNative extends Component {
         <View style={Style.Buttons}>
           <TouchableOpacity
             style={Style.ButtonAll}
-            onPress={this.loadAllIssueApi.bind(this)}>
+            onPress={() => {
+              this.setState({
+                states: 'all',
+              });
+              this.loadAllIssueApi();
+            }}>
             <Text
               style={{
                 margin: 5,
@@ -232,7 +243,12 @@ export default class rocketNative extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={Style.ButtonOpeneds}
-            onPress={this.loadOpenIssuesApi.bind(this)}>
+            onPress={() => {
+              this.setState({
+                states: 'open',
+              });
+              this.loadOpenIssue();
+            }}>
             <Text
               style={{
                 margin: 5,
@@ -244,7 +260,12 @@ export default class rocketNative extends Component {
           </TouchableOpacity>
           <TouchableOpacity
             style={Style.ButtonCloseds}
-            onPress={this.loadClosedIssuesApi.bind(this)}>
+            onPress={() => {
+              this.setState({
+                states: 'closed',
+              });
+              this.loadClosedIssue();
+            }}>
             <Text
               style={{
                 margin: 5,
@@ -255,7 +276,7 @@ export default class rocketNative extends Component {
             </Text>
           </TouchableOpacity>
         </View>
-        <View>{this.loadIssue()}</View>
+        {this.loadIssue()}
       </View>
     );
   }

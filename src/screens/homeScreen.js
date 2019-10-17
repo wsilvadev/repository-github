@@ -9,7 +9,7 @@ import {
   YellowBox,
 } from 'react-native';
 import Style from '../styles/styleshomeScreen';
-import {PacmanIndicator} from 'react-native-indicators';
+import {DotIndicator} from 'react-native-indicators';
 import api from '../services/api';
 import AsyncStorage from '@react-native-community/async-storage';
 import Swipeout from 'react-native-swipeout';
@@ -58,7 +58,7 @@ export default class screens extends Component {
   };
   LoadEnpty = () => {
     if (this.state.loading === true) {
-      return <PacmanIndicator />;
+      return <DotIndicator size={10} color={'#F87d493e'} />;
     } else if (this.state.docs.length <= 0) {
       return (
         <View style={Style.EmptyView}>
