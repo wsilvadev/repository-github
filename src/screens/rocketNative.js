@@ -11,26 +11,35 @@ import {
   YellowBox,
 } from 'react-native';
 import {DotIndicator} from 'react-native-indicators';
-import {async} from 'rxjs/internal/scheduler/async';
 YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
 
 // import { Container } from './styles';
 
 export default class rocketNative extends Component {
   componentDidMount() {
-    this.loadAllIssueApi();
+    this.loadAllIssueApi(this.state.page);
   }
-  state = {
-    issueOpen: [],
-    issueClosed: [],
-    issue: [],
-    page: 1,
-    pageClosed: 1,
-    pageOpen: 1,
-    opacity1: 1,
-    loading: false,
-    states: 'all',
-  };
+  constructor(props) {
+    super(props);
+    this.pressed = false;
+    this.pressedClosed = false;
+    this.pressedOpen = false;
+
+    this.state = {
+      issueOpen: [],
+      issueClosed: [],
+      issue: [],
+      page: 1,
+      pageClosed: 1,
+      pageOpen: 1,
+      opacity1: 1,
+      opacity2: 1,
+      opacity3: 1,
+
+      loading: false,
+      states: 'all',
+    };
+  }
 
   static navigationOptions = ({navigation}) => {
     return {
@@ -43,78 +52,84 @@ export default class rocketNative extends Component {
     };
   };
   loadAllIssueApi = async (page = 1) => {
-    const {navigation} = this.props;
+    if (!this.pressed) {
+      this.pressed = false;
+      const {navigation} = this.props;
+      const orgsRepos = navigation.getParam('textRepos');
+      this.setState({loading: true});
+      await api
+        .get(
+          `https://api.github.com/repos/${orgsRepos}/issues?page=${page}&state=all`,
+        )
+        .then(res => {
+          const listItems = this.state.issue;
+          const data = listItems.concat(res.data);
 
-    const orgsRepos = navigation.getParam('textRepos');
-    this.setState({loading: true});
-    await api
-      .get(
-        `https://api.github.com/repos/${orgsRepos}/issues?page=${page}&state=all`,
-      )
-      .then(res => {
-        const listItems = this.state.issue;
-        const data = listItems.concat(res.data);
-
-        this.setState({
-          issue: data.filter(item => item.id !== this.state.issue.id),
-          loading: false,
-          page,
-          opacity1: 0.8,
-          opacity2: 0.2,
-          opacity3: 0.2,
-        });
-      })
-      .catch(error => console.warn(error));
+          this.setState({
+            issue: data.filter(item => item.id !== this.state.issue.id),
+            loading: false,
+            page,
+            opacity1: 0.8,
+            opacity2: 0.2,
+            opacity3: 0.2,
+          });
+        })
+        .catch(error => console.warn(error));
+    }
   };
   loadOpenIssue = async (pageOpen = 1) => {
-    const {navigation} = this.props;
+    if (!this.pressedOpen) {
+      const {navigation} = this.props;
+      const orgsRepos = navigation.getParam('textRepos');
+      this.setState({loading: true});
+      await api
+        .get(
+          `https://api.github.com/repos/${orgsRepos}/issues?page=${pageOpen}&state=open`,
+        )
+        .then(res => {
+          const listItems = this.state.issueOpen;
+          const data = listItems.concat(res.data);
 
-    const orgsRepos = navigation.getParam('textRepos');
-    this.setState({loading: true});
-    await api
-      .get(
-        `https://api.github.com/repos/${orgsRepos}/issues?page=${pageOpen}&state=open`,
-      )
-      .then(res => {
-        const listItems = this.state.issueOpen;
-        const data = listItems.concat(res.data);
-
-        this.setState({
-          issueOpen: data.filter(item => item.id !== this.state.issueOpen.id),
-          loading: false,
-          pageOpen,
-          opacity1: 0.2,
-          opacity2: 0.8,
-          opacity3: 0.2,
-        });
-      })
-      .catch(error => console.warn(error));
+          this.setState({
+            issueOpen: data.filter(item => item.id !== this.state.issueOpen.id),
+            loading: false,
+            pageOpen,
+            opacity1: 0.2,
+            opacity2: 0.8,
+            opacity3: 0.2,
+          });
+        })
+        .catch(error => console.warn(error));
+    }
+    this.pressedOpen = true;
   };
   loadClosedIssue = async (pageClosed = 1) => {
     const {navigation} = this.props;
+    if (!this.pressedClosed) {
+      this.pressedClosed = false;
+      const orgsRepos = navigation.getParam('textRepos');
+      this.setState({loading: true});
+      await api
+        .get(
+          `https://api.github.com/repos/${orgsRepos}/issues?page=${pageClosed}&state=closed`,
+        )
+        .then(res => {
+          const listItems = this.state.issueClosed;
+          const data = listItems.concat(res.data);
 
-    const orgsRepos = navigation.getParam('textRepos');
-    this.setState({loading: true});
-    await api
-      .get(
-        `https://api.github.com/repos/${orgsRepos}/issues?page=${pageClosed}&state=closed`,
-      )
-      .then(res => {
-        const listItems = this.state.issueClosed;
-        const data = listItems.concat(res.data);
-
-        this.setState({
-          issueClosed: data.filter(
-            item => item.id !== this.state.issueClosed.id,
-          ),
-          loading: false,
-          pageClosed,
-          opacity1: 0.2,
-          opacity2: 0.2,
-          opacity3: 0.8,
-        });
-      })
-      .catch(error => console.warn(error));
+          this.setState({
+            issueClosed: data.filter(
+              item => item.id !== this.state.issueClosed.id,
+            ),
+            loading: false,
+            pageClosed,
+            opacity1: 0.2,
+            opacity2: 0.2,
+            opacity3: 0.8,
+          });
+        })
+        .catch(error => console.warn(error));
+    }
   };
   renderItem = ({item}) => {
     const {navigation} = this.props;
