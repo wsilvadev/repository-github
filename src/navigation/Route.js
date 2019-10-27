@@ -1,15 +1,15 @@
 import {createAppContainer} from 'react-navigation';
 import {createStackNavigator} from 'react-navigation-stack';
-import App from '../screens/homeScreen';
-import ScreenRocketNative from '../screens/rocketNative';
+import Page1 from '../screens/Page1';
+import Page2 from '../screens/Page2';
 
 export default createAppContainer(
   createStackNavigator({
     App: {
-      screen: App,
+      screen: Page1,
     },
     ScreenNative: {
-      screen: ScreenRocketNative,
+      screen: Page2,
     },
   }),
 );

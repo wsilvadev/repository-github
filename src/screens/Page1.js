@@ -8,7 +8,7 @@ import {
   Image,
   YellowBox,
 } from 'react-native';
-import Style from '../styles/styleshomeScreen';
+import Style from '../styles/StylePage1';
 import {DotIndicator} from 'react-native-indicators';
 import api from '../services/api';
 import AsyncStorage from '@react-native-community/async-storage';

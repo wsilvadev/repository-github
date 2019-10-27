@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import api from '../services/api';
-import Style from '../styles/styleRocketNative';
+import Style from '../styles/StylePage2';
 import {
   View,
   TouchableOpacity,

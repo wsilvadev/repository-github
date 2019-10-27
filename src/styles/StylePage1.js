@@ -1,6 +1,4 @@
 import {StyleSheet} from 'react-native';
-import {black} from 'ansi-colors';
-
 const Styles = StyleSheet.create({
   ContainerMain: {
     backgroundColor: '#ddd',
