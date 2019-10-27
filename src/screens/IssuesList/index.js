@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import api from '../../services/api';
-import Style from './styles/StylePage2';
+import Style from './style';
 import {
   View,
   TouchableOpacity,
@@ -15,7 +15,7 @@ YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
 
 // import { Container } from './styles';
 
-export default class rocketNative extends Component {
+export default class issueList extends Component {
   componentDidMount() {
     this.loadAllIssueApi(this.state.page);
   }

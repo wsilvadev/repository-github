@@ -89,10 +89,6 @@ export default class Home extends Component {
   };
 
   renderRepositories = () => {
-    if (this.state.isLoading) {
-      return <DotIndicator size={10} color={'#F87d493e'} />;
-    }
-
     const EmptyResult = (
       <View style={Style.EmptyView}>
         <Image
@@ -108,16 +104,19 @@ export default class Home extends Component {
         </Text>
       </View>
     );
-
-    return (
-      <FlatList
-        data={this.state.repositories}
-        keyExtractor={item => item.node_id}
-        renderItem={this.renderItem}
-        ListEmptyComponent={EmptyResult}
-        onEndReachedThreshold={0.1}
-      />
-    );
+    if (this.state.isLoading) {
+      return <DotIndicator size={10} color={'#F87d493e'} />;
+    } else {
+      return (
+        <FlatList
+          data={this.state.repositories}
+          keyExtractor={item => item.node_id}
+          renderItem={this.renderItem}
+          ListEmptyComponent={EmptyResult}
+          onEndReachedThreshold={0.1}
+        />
+      );
+    }
   };
 
   removeItem = async id => {
@@ -152,7 +151,7 @@ export default class Home extends Component {
         <TouchableOpacity
           style={Style.ContainerFlexList}
           onPress={() =>
-            this.props.navigation.navigate('ScreenNative', {
+            this.props.navigation.navigate('IssuesList', {
               name: item.name,
               textRepos: item.full_name,
             })
