@@ -22,7 +22,7 @@ YellowBox.ignoreWarnings([
 
 export default class screens extends Component {
   async componentDidMount() {
-    this.renderRepos();
+    this.getRepositories();
   }
   constructor(props) {
     super(props);
@@ -47,7 +47,7 @@ export default class screens extends Component {
     await AsyncStorage.setItem('orgRepos', JSON.stringify(newDocs));
     console.log(newDocs);
   };
-  renderRepos = async () => {
+  getRepositories = async () => {
     const element = await AsyncStorage.getItem('orgRepos');
 
     const values = JSON.parse(element);
