@@ -10,10 +10,10 @@ import {
 } from 'react-native';
 import {DotIndicator} from 'react-native-indicators';
 import Swipeout from 'react-native-swipeout';
-import AsyncStorage from '@react-native-community/async-storage';
 
 import Style from './style';
 import api from '../../services/api';
+import Persist from '../../models/persist';
 
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
@@ -21,29 +21,16 @@ YellowBox.ignoreWarnings([
   'Warning: componentWillUpdate is deprecated',
   'Warning: componentWillReceiveProps is deprecated',
 ]);
-/**
- *
- * @param {Array<any>} repositories
- */
-const saveRepositories = async repositories => {
-  await AsyncStorage.setItem('orgRepos', JSON.stringify(repositories || []));
-};
 
-const getRepositories = async () => {
-  const data = await AsyncStorage.getItem('orgRepos');
-
-  const repositories = JSON.parse(data) || [];
-  return repositories;
-};
 const pushRepository = async (repositories, repository) => {
   const repos = repositories.slice();
   repos.push(repository);
-  await saveRepositories(repos);
+  await Persist.saveRepositories(repos);
   return repos;
 };
 const removeRepository = async (repositories, id) => {
   const repos = repositories.filter(item => item.id !== id);
-  await saveRepositories(repos);
+  await Persist.saveRepositories(repos);
   return repos;
 };
 
@@ -69,7 +56,7 @@ export default class Home extends Component {
   }
 
   async componentDidMount() {
-    const repositories = await getRepositories();
+    const repositories = await Persist.getRepositories();
     this.setState({repositories});
   }
 
