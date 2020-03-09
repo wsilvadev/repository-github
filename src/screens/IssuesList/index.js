@@ -8,10 +8,10 @@ import {
   Linking,
   YellowBox,
 } from 'react-native';
+import {DotIndicator} from 'react-native-indicators';
 
 import api from '../../services/api';
 import styles from './style';
-import {DotIndicator} from 'react-native-indicators';
 import {Urls, Issues} from '../../strings';
 YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
 
@@ -19,25 +19,18 @@ YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
 
 export default class issueList extends Component {
   componentDidMount() {
-    this.loadAllIssueApi(this.state.page);
+    this.loadIssuesApi(this.state.page);
   }
+
   constructor(props) {
     super(props);
-    this.pressed = false;
-    this.pressedClosed = false;
-    this.pressedOpen = false;
 
     this.state = {
-      issueOpen: [],
-      issueClosed: [],
       issue: [],
       page: 1,
-      pageClosed: 1,
-      pageOpen: 1,
       opacity1: 1,
-      opacity2: 1,
-      opacity3: 1,
-
+      opacity2: 0.3,
+      opacity3: 0.3,
       loading: false,
       states: 'all',
     };
@@ -49,80 +42,26 @@ export default class issueList extends Component {
       headerTitleStyle: styles.headerTitleStyle,
     };
   };
-  loadAllIssueApi = async (page = 1) => {
-    if (!this.pressed) {
-      this.pressed = false;
-      const {navigation} = this.props;
-      const orgsRepos = navigation.getParam('textRepos');
-      this.setState({loading: true});
-      await api
-        .get(Urls.issues(orgsRepos, page, 'all'))
-        .then(res => {
-          const listItems = this.state.issue;
-          const data = listItems.concat(res.data);
 
-          this.setState({
-            issue: data.filter(item => item.id !== this.state.issue.id),
-            loading: false,
-            page,
-            opacity1: 0.8,
-            opacity2: 0.2,
-            opacity3: 0.2,
-          });
-        })
-        .catch(error => console.warn(error));
-    }
-  };
-  loadOpenIssue = async (pageOpen = 1) => {
-    if (!this.pressedOpen) {
-      const {navigation} = this.props;
-      const orgsRepos = navigation.getParam('textRepos');
-      this.setState({loading: true});
-      await api
-        .get(Urls.issues(orgsRepos, pageOpen, 'open'))
-        .then(res => {
-          const listItems = this.state.issueOpen;
-          const data = listItems.concat(res.data);
-
-          this.setState({
-            issueOpen: data.filter(item => item.id !== this.state.issueOpen.id),
-            loading: false,
-            pageOpen,
-            opacity1: 0.2,
-            opacity2: 0.8,
-            opacity3: 0.2,
-          });
-        })
-        .catch(error => console.warn(error));
-    }
-    this.pressedOpen = true;
-  };
-  loadClosedIssue = async (pageClosed = 1) => {
+  loadIssuesApi = async (page = 1) => {
     const {navigation} = this.props;
-    if (!this.pressedClosed) {
-      this.pressedClosed = false;
-      const orgsRepos = navigation.getParam('textRepos');
-      this.setState({loading: true});
-      await api
-        .get(Urls.issues(orgsRepos, pageClosed, 'closed'))
-        .then(res => {
-          const listItems = this.state.issueClosed;
-          const data = listItems.concat(res.data);
+    const orgsRepos = navigation.getParam('textRepos');
+    this.setState({loading: true});
+    await api
+      .get(Urls.issues(orgsRepos, page, this.state.states))
+      .then(res => {
+        const listItems = this.state.issue;
+        const data = listItems.concat(res.data);
 
-          this.setState({
-            issueClosed: data.filter(
-              item => item.id !== this.state.issueClosed.id,
-            ),
-            loading: false,
-            pageClosed,
-            opacity1: 0.2,
-            opacity2: 0.2,
-            opacity3: 0.8,
-          });
-        })
-        .catch(error => console.warn(error));
-    }
+        this.setState({
+          issue: data.filter(item => item.id !== this.state.issue.id),
+          loading: false,
+          page: page,
+        });
+      })
+      .catch(error => console.warn(error));
   };
+
   renderItem = ({item}) => {
     const {navigation} = this.props;
 
@@ -163,114 +102,109 @@ export default class issueList extends Component {
       </View>
     );
   };
-  loadMoreOpen = () => {
-    const {pageOpen} = this.state;
 
-    const pageOpens = pageOpen + 1;
-    this.loadOpenIssue(pageOpens);
-  };
-  loadMoreClosed = () => {
-    const {pageClosed} = this.state;
-    const pageCloseds = pageClosed + 1;
-    this.loadClosedIssue(pageCloseds);
-  };
-  loadMoreAll = () => {
+  loadMore = () => {
     const {page} = this.state;
     const pages = page + 1;
-    this.loadAllIssueApi(pages);
+
+    if (pages <= this.state.issue.length) {
+      this.loadIssuesApi(pages);
+    } else {
+      this.loadIssuesApi(this.state.page);
+    }
   };
+
   loadIssue = () => {
     const {loading, issue} = this.state;
-    if (loading === true && issue.length <= 0) {
+    if (loading && issue.length <= 0) {
       return (
         <View>
           <DotIndicator size={10} color={'#F87d493e'} />
         </View>
       );
-    } else if (this.state.states === 'all') {
+    } else {
       return (
         <FlatList
           data={this.state.issue}
           keyExtractor={item => item.node_id}
           renderItem={this.renderItem}
-          onEndReached={this.loadMoreAll}
-          onEndReachedThreshold={0.4}
-        />
-      );
-    } else if (this.state.states === 'open') {
-      return (
-        <FlatList
-          data={this.state.issueOpen}
-          keyExtractor={item => item.node_id}
-          renderItem={this.renderItem}
-          onEndReached={this.loadMoreOpen}
-          onEndReachedThreshold={0.4}
-        />
-      );
-    } else if (this.state.states === 'closed') {
-      return (
-        <FlatList
-          data={this.state.issueClosed}
-          keyExtractor={item => item.node_id}
-          renderItem={this.renderItem}
-          onEndReached={this.loadMoreClosed}
+          onEndReached={this.loadMore}
           onEndReachedThreshold={0.4}
         />
       );
     }
   };
+  handleAll = () => {
+    this.setState({
+      states: 'all',
+      issue: [],
+      opacity1: 1,
+      opacity2: 0.3,
+      opacity3: 0.3,
+      page: 1,
+    });
+    this.loadIssuesApi(this.state.page);
+  };
+  handleOpen = () => {
+    this.setState({
+      states: 'open',
+      issue: [],
+      opacity1: 0.3,
+      opacity2: 1,
+      opacity3: 0.3,
+      page: 1,
+    });
+    this.loadIssuesApi(this.state.page);
+  };
+  handleClose = () => {
+    this.setState({
+      states: 'closed',
+      issue: [],
+      opacity1: 0.3,
+      opacity2: 0.3,
+      opacity3: 1,
+      page: 1,
+    });
+    this.loadIssuesApi(this.state.page);
+  };
   render() {
     return (
       <View style={styles.containerScreenThwo}>
         <View style={styles.buttons}>
-          <TouchableOpacity
-            style={styles.buttonAll}
-            onPress={() => {
-              this.setState({
-                states: 'all',
-              });
-              this.loadAllIssueApi();
-            }}>
+          <TouchableOpacity style={styles.buttonAll} onPress={this.handleAll}>
             <Text
-              style={{
-                margin: 5,
-                textAlign: 'center',
-                opacity: this.state.opacity1,
-              }}>
+              style={[
+                styles.textButton,
+                {
+                  opacity: this.state.opacity1,
+                },
+              ]}>
               {Issues.all}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.buttonOpeneds}
-            onPress={() => {
-              this.setState({
-                states: 'open',
-              });
-              this.loadOpenIssue();
-            }}>
+            onPress={this.handleOpen}>
             <Text
-              style={{
-                margin: 5,
-                textAlign: 'center',
-                opacity: this.state.opacity2,
-              }}>
+              style={[
+                styles.textButton,
+                {
+                  opacity: this.state.opacity2,
+                },
+              ]}>
               {Issues.open}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.buttonCloseds}
-            onPress={() => {
-              this.setState({
-                states: 'closed',
-              });
-              this.loadClosedIssue();
-            }}>
+            onPress={this.handleClose}>
             <Text
-              style={{
-                margin: 5,
-                textAlign: 'center',
-                opacity: this.state.opacity3,
-              }}>
+              style={[
+                styles.textButton,
+                {
+                  opacity: this.state.opacity3,
+                },
+              ]}>
               {Issues.closed}
             </Text>
           </TouchableOpacity>

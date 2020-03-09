@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {colors, layouts, spacing} from '../../styles';
+import {moderateScale} from '../../utils/dimensions';
 
 const Styles = StyleSheet.create({
   containerFlexList: {
@@ -55,6 +56,10 @@ const Styles = StyleSheet.create({
   headerTitleStyle: {
     flexGrow: 1,
     fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  textButton: {
+    margin: moderateScale(5),
     textAlign: 'center',
   },
 });
