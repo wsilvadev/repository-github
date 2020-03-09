@@ -11,6 +11,7 @@ import {
   YellowBox,
 } from 'react-native';
 import {DotIndicator} from 'react-native-indicators';
+import {Urls, Issues} from '../../strings';
 YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
 
 // import { Container } from './styles';
@@ -58,9 +59,7 @@ export default class issueList extends Component {
       const orgsRepos = navigation.getParam('textRepos');
       this.setState({loading: true});
       await api
-        .get(
-          `https://api.github.com/repos/${orgsRepos}/issues?page=${page}&state=all`,
-        )
+        .get(Urls.issues(orgsRepos, page, 'all'))
         .then(res => {
           const listItems = this.state.issue;
           const data = listItems.concat(res.data);
@@ -83,9 +82,7 @@ export default class issueList extends Component {
       const orgsRepos = navigation.getParam('textRepos');
       this.setState({loading: true});
       await api
-        .get(
-          `https://api.github.com/repos/${orgsRepos}/issues?page=${pageOpen}&state=open`,
-        )
+        .get(Urls.issues(orgsRepos, pageOpen, 'open'))
         .then(res => {
           const listItems = this.state.issueOpen;
           const data = listItems.concat(res.data);
@@ -110,9 +107,7 @@ export default class issueList extends Component {
       const orgsRepos = navigation.getParam('textRepos');
       this.setState({loading: true});
       await api
-        .get(
-          `https://api.github.com/repos/${orgsRepos}/issues?page=${pageClosed}&state=closed`,
-        )
+        .get(Urls.issues(orgsRepos, pageClosed, 'closed'))
         .then(res => {
           const listItems = this.state.issueClosed;
           const data = listItems.concat(res.data);
@@ -140,17 +135,10 @@ export default class issueList extends Component {
       <View>
         <TouchableOpacity
           style={Style.ContainerFlexList}
-          onPress={() =>
-            Linking.openURL(`https://github.com/${orgsRepos}/issues/${
-              item.number
-            }
-`)
-          }>
+          onPress={() => Linking.openURL(Urls.user(orgsRepos, item.number))}>
           <Image
             source={{
-              uri: `https://avatars3.githubusercontent.com/u/${
-                item.user.id
-              }?v=4`,
+              uri: Urls.avatarIssue(item.user.id),
             }}
             style={Style.Imagen}
           />
@@ -170,8 +158,7 @@ export default class issueList extends Component {
           </View>
           <Image
             source={{
-              uri:
-                'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
+              uri: Urls.union,
             }}
             style={Style.Icon}
           />
@@ -253,7 +240,7 @@ export default class issueList extends Component {
                 textAlign: 'center',
                 opacity: this.state.opacity1,
               }}>
-              Todas
+              {Issues.all}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -270,7 +257,7 @@ export default class issueList extends Component {
                 textAlign: 'center',
                 opacity: this.state.opacity2,
               }}>
-              Abertas
+              {Issues.open}
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -287,7 +274,7 @@ export default class issueList extends Component {
                 textAlign: 'center',
                 opacity: this.state.opacity3,
               }}>
-              Fechadas
+              {Issues.closed}
             </Text>
           </TouchableOpacity>
         </View>

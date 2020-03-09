@@ -14,6 +14,7 @@ import Swipeout from 'react-native-swipeout';
 import Style from './style';
 import api from '../../services/api';
 import Persist from '../../models/persist';
+import {HomeScreen, Urls} from '../../strings';
 
 YellowBox.ignoreWarnings([
   'Warning: Async Storage has been extracted from react-native core',
@@ -36,7 +37,7 @@ const removeRepository = async (repositories, id) => {
 
 export default class Home extends Component {
   static navigationOptions = {
-    title: 'GitIssues',
+    title: HomeScreen.title,
     headerTitleStyle: {
       textAlign: 'center',
       flexGrow: 1,
@@ -81,14 +82,10 @@ export default class Home extends Component {
         <Image
           style={Style.EmptyToShow}
           source={{
-            uri:
-              'https://cdn.icon-icons.com/icons2/1157/PNG/512/1487086345-cross_81577.png',
+            uri: Urls.empty,
           }}
         />
-        <Text style={Style.TextDescription}>
-          You need to add Organizatoin and Repository in the following format:
-          "organization-name/repository-name" (i.e: facebook/react)
-        </Text>
+        <Text style={Style.TextDescription}>{HomeScreen.sugestion}</Text>
       </View>
     );
     if (this.state.isLoading) {
@@ -124,8 +121,7 @@ export default class Home extends Component {
           <View>
             <Image
               source={{
-                uri:
-                  'https://cdn.icon-icons.com/icons2/1572/PNG/512/3592821-garbage-can-general-office-recycle-bin-rubbish-bin-trash-bin-trash-can_107760.png',
+                uri: Urls.trash,
               }}
               style={Style.IconTash}
             />
@@ -145,7 +141,7 @@ export default class Home extends Component {
           }>
           <Image
             source={{
-              uri: `https://avatars3.githubusercontent.com/u/${item.id}?v=4`,
+              uri: Urls.avatarHome(item.id),
             }}
             style={Style.Imagen}
           />
@@ -165,8 +161,7 @@ export default class Home extends Component {
           </View>
           <Image
             source={{
-              uri:
-                'https://cdn.icon-icons.com/icons2/731/PNG/512/right-arrow-1_icon-icons.com_62892.png',
+              uri: Urls.back,
             }}
             style={Style.Icon}
           />
@@ -180,7 +175,7 @@ export default class Home extends Component {
       <View style={Style.ContainerMain}>
         <View style={Style.ContainerInput}>
           <TextInput
-            placeholder="organizaton/repository"
+            placeholder={HomeScreen.organizationRepository}
             style={Style.InputContainer}
             onChangeText={this.handleRepositoryPathChange}
           />
