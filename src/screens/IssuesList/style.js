@@ -1,74 +1,55 @@
 import {StyleSheet} from 'react-native';
+import {colors, layouts, spacing} from '../../styles';
 
 const Styles = StyleSheet.create({
   ContainerFlexList: {
-    backgroundColor: '#fff',
-    height: 80,
+    ...layouts.centered,
+    ...layouts.flexRow,
+    backgroundColor: colors.white,
     borderRadius: 5,
-    margin: 15,
-    marginTop: -1,
-    flexDirection: 'row',
+    margin: spacing.moderate.size_10,
   },
   ContainerScreenThwo: {
-    flex: 1,
-    backgroundColor: '#ddd',
+    ...layouts.container,
+    backgroundColor: colors.lightGray,
   },
   RenderText: {
-    flex: 1,
-    flexDirection: 'column',
-    marginTop: 20,
-    width: '30%',
+    ...layouts.container,
   },
   Buttons: {
-    flexDirection: 'row',
-    margin: 20,
+    ...layouts.flexRow,
+    margin: spacing.moderate.size_20,
     borderRadius: 5,
-    backgroundColor: '#CCC',
+    backgroundColor: colors.gainsboro,
   },
   Imagen: {
-    width: 50,
-    height: 50,
+    width: spacing.moderate.size_42,
+    height: spacing.moderate.size_42,
+    margin: spacing.moderate.size_10,
     borderRadius: 30,
-    margin: 10,
-    marginTop: 15,
   },
   Icon: {
-    width: 15,
-    height: 15,
-    margin: 10,
-    marginTop: 35,
+    width: spacing.moderate.size_14,
+    height: spacing.moderate.size_14,
+    margin: spacing.moderate.size_10,
   },
   ButtonAll: {
-    backgroundColor: '#CCC',
-    flex: 1,
+    ...layouts.container,
+    backgroundColor: colors.gainsboro,
     borderRadius: 5,
   },
   ButtonOpeneds: {
+    ...layouts.container,
     borderRadius: 5,
-
-    flex: 1,
-    backgroundColor: '#CCC',
+    backgroundColor: colors.gainsboro,
   },
   ButtonCloseds: {
+    ...layouts.container,
     borderRadius: 5,
-
-    flex: 1,
-    backgroundColor: '#CCC',
-  },
-  TextAll: {
-    margin: 5,
-    textAlign: 'center',
-  },
-
-  TextClosed: {
-    margin: 5,
-    textAlign: 'center',
-  },
-  TitleApiName: {
-    fontSize: 15,
+    backgroundColor: colors.gainsboro,
   },
   ApiDescription: {
-    fontSize: 10,
+    fontSize: spacing.moderate.size_10,
     opacity: 0.4,
   },
 });
