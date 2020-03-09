@@ -4,17 +4,17 @@ import {moderateScale} from '../../utils/dimensions';
 import {layouts, colors, spacing} from '../../styles';
 
 const Styles = StyleSheet.create({
-  ContainerMain: {
+  containerMain: {
     ...layouts.container,
     backgroundColor: colors.lightGray,
   },
-  ContainerInput: {
+  containerInput: {
     ...layouts.flexRow,
     ...layouts.centered,
     paddingLeft: spacing.moderate.size_14,
     paddingRight: spacing.moderate.size_14,
   },
-  InputContainer: {
+  inputContainer: {
     ...layouts.container,
     backgroundColor: colors.white,
     fontSize: spacing.moderate.size_14,
@@ -34,49 +34,53 @@ const Styles = StyleSheet.create({
     fontWeight: 'bold',
     padding: spacing.moderate.size_14,
   },
-  ContainerFlexList: {
+  containerFlexList: {
     ...layouts.centered,
     ...layouts.flexRow,
     backgroundColor: colors.white,
     borderRadius: 5,
     margin: spacing.moderate.size_10,
   },
-  RenderText: {
+  containerTrash: {
+    ...layouts.container,
+    ...layouts.centered,
+  },
+  renderText: {
     ...layouts.container,
   },
-  EmptyView: {
+  emptyView: {
     ...layouts.centered,
     marginTop: spacing.moderate.size_75,
   },
-  EmptyToShow: {
+  emptyToShow: {
     width: spacing.moderate.size_100,
     height: spacing.moderate.size_100,
     opacity: 0.3,
   },
-  Imagen: {
+  image: {
     width: spacing.moderate.size_42,
     height: spacing.moderate.size_42,
     margin: spacing.moderate.size_10,
     borderRadius: 30,
   },
-  IconTash: {
+  iconTrash: {
     width: spacing.moderate.size_42,
     height: spacing.moderate.size_42,
   },
-  TextDescription: {
+  textDescription: {
     fontSize: spacing.moderate.size_14,
     opacity: 0.6,
     margin: spacing.moderate.size_20,
   },
-  Icon: {
+  icon: {
     width: spacing.moderate.size_14,
     height: spacing.moderate.size_14,
     margin: spacing.moderate.size_10,
   },
-  TitleApiName: {
+  titleApiName: {
     fontSize: spacing.moderate.size_14,
   },
-  ApiDescription: {
+  apiDescription: {
     fontSize: spacing.moderate.size_10,
     opacity: 0.4,
   },

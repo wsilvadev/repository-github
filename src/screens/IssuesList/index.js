@@ -1,6 +1,4 @@
 import React, {Component} from 'react';
-import api from '../../services/api';
-import Style from './style';
 import {
   View,
   TouchableOpacity,
@@ -10,6 +8,9 @@ import {
   Linking,
   YellowBox,
 } from 'react-native';
+
+import api from '../../services/api';
+import styles from './style';
 import {DotIndicator} from 'react-native-indicators';
 import {Urls, Issues} from '../../strings';
 YellowBox.ignoreWarnings(['Possible Unhandled Promise Rejection']);
@@ -45,11 +46,7 @@ export default class issueList extends Component {
   static navigationOptions = ({navigation}) => {
     return {
       title: navigation.getParam('name'),
-      headerTitleStyle: {
-        textAlign: 'center',
-        flexGrow: 1,
-        fontWeight: 'bold',
-      },
+      headerTitleStyle: styles.headerTitleStyle,
     };
   };
   loadAllIssueApi = async (page = 1) => {
@@ -134,17 +131,17 @@ export default class issueList extends Component {
     return (
       <View>
         <TouchableOpacity
-          style={Style.ContainerFlexList}
+          style={styles.containerFlexList}
           onPress={() => Linking.openURL(Urls.user(orgsRepos, item.number))}>
           <Image
             source={{
               uri: Urls.avatarIssue(item.user.id),
             }}
-            style={Style.Imagen}
+            style={styles.image}
           />
-          <View style={Style.RenderText}>
+          <View style={styles.renderText}>
             <Text
-              style={Style.TitleApiName}
+              style={styles.titleApiName}
               numberOfLines={2}
               ellipsizeMode={'middle'}>
               {item.title}
@@ -152,7 +149,7 @@ export default class issueList extends Component {
             <Text
               numberOfLines={3}
               ellipsizeMode="middle"
-              style={Style.ApiDescription}>
+              style={styles.apiDescription}>
               {item.user.login}
             </Text>
           </View>
@@ -160,7 +157,7 @@ export default class issueList extends Component {
             source={{
               uri: Urls.union,
             }}
-            style={Style.Icon}
+            style={styles.icon}
           />
         </TouchableOpacity>
       </View>
@@ -224,10 +221,10 @@ export default class issueList extends Component {
   };
   render() {
     return (
-      <View style={Style.ContainerScreenThwo}>
-        <View style={Style.Buttons}>
+      <View style={styles.containerScreenThwo}>
+        <View style={styles.buttons}>
           <TouchableOpacity
-            style={Style.ButtonAll}
+            style={styles.buttonAll}
             onPress={() => {
               this.setState({
                 states: 'all',
@@ -244,7 +241,7 @@ export default class issueList extends Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={Style.ButtonOpeneds}
+            style={styles.buttonOpeneds}
             onPress={() => {
               this.setState({
                 states: 'open',
@@ -261,7 +258,7 @@ export default class issueList extends Component {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={Style.ButtonCloseds}
+            style={styles.buttonCloseds}
             onPress={() => {
               this.setState({
                 states: 'closed',

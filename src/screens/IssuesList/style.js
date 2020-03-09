@@ -2,55 +2,60 @@ import {StyleSheet} from 'react-native';
 import {colors, layouts, spacing} from '../../styles';
 
 const Styles = StyleSheet.create({
-  ContainerFlexList: {
+  containerFlexList: {
     ...layouts.centered,
     ...layouts.flexRow,
     backgroundColor: colors.white,
     borderRadius: 5,
     margin: spacing.moderate.size_10,
   },
-  ContainerScreenThwo: {
+  containerScreenThwo: {
     ...layouts.container,
     backgroundColor: colors.lightGray,
   },
-  RenderText: {
+  renderText: {
     ...layouts.container,
   },
-  Buttons: {
+  buttons: {
     ...layouts.flexRow,
     margin: spacing.moderate.size_20,
     borderRadius: 5,
     backgroundColor: colors.gainsboro,
   },
-  Imagen: {
+  image: {
     width: spacing.moderate.size_42,
     height: spacing.moderate.size_42,
     margin: spacing.moderate.size_10,
     borderRadius: 30,
   },
-  Icon: {
+  icon: {
     width: spacing.moderate.size_14,
     height: spacing.moderate.size_14,
     margin: spacing.moderate.size_10,
   },
-  ButtonAll: {
+  buttonAll: {
     ...layouts.container,
     backgroundColor: colors.gainsboro,
     borderRadius: 5,
   },
-  ButtonOpeneds: {
+  buttonOpeneds: {
     ...layouts.container,
     borderRadius: 5,
     backgroundColor: colors.gainsboro,
   },
-  ButtonCloseds: {
+  buttonCloseds: {
     ...layouts.container,
     borderRadius: 5,
     backgroundColor: colors.gainsboro,
   },
-  ApiDescription: {
+  apiDescription: {
     fontSize: spacing.moderate.size_10,
     opacity: 0.4,
+  },
+  headerTitleStyle: {
+    flexGrow: 1,
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
 export default Styles;

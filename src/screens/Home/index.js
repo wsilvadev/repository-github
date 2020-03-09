@@ -11,7 +11,7 @@ import {
 import {DotIndicator} from 'react-native-indicators';
 import Swipeout from 'react-native-swipeout';
 
-import Style from './style';
+import styles from './style';
 import api from '../../services/api';
 import Persist from '../../models/persist';
 import {HomeScreen, Urls} from '../../strings';
@@ -38,13 +38,7 @@ const removeRepository = async (repositories, id) => {
 export default class Home extends Component {
   static navigationOptions = {
     title: HomeScreen.title,
-    headerTitleStyle: {
-      textAlign: 'center',
-      flexGrow: 1,
-      fontSize: 20,
-      fontWeight: 'bold',
-      alignSelf: 'center',
-    },
+    headerTitleStyle: styles.headerTitleStyle,
   };
 
   constructor(props) {
@@ -78,14 +72,14 @@ export default class Home extends Component {
 
   renderRepositories = () => {
     const EmptyResult = (
-      <View style={Style.EmptyView}>
+      <View style={styles.emptyView}>
         <Image
-          style={Style.EmptyToShow}
+          style={styles.emptyToShow}
           source={{
             uri: Urls.empty,
           }}
         />
-        <Text style={Style.TextDescription}>{HomeScreen.sugestion}</Text>
+        <Text style={styles.textDescription}>{HomeScreen.sugestion}</Text>
       </View>
     );
     if (this.state.isLoading) {
@@ -118,12 +112,12 @@ export default class Home extends Component {
         backgroundColor: 'tranparent',
         component: (
           // TODO: test without View
-          <View>
+          <View style={styles.containerTrash}>
             <Image
               source={{
                 uri: Urls.trash,
               }}
-              style={Style.IconTash}
+              style={styles.iconTrash}
             />
           </View>
         ),
@@ -132,7 +126,7 @@ export default class Home extends Component {
     return (
       <Swipeout right={swiiperoutBtns}>
         <TouchableOpacity
-          style={Style.ContainerFlexList}
+          style={styles.containerFlexList}
           onPress={() =>
             this.props.navigation.navigate('IssuesList', {
               name: item.name,
@@ -143,11 +137,11 @@ export default class Home extends Component {
             source={{
               uri: Urls.avatarHome(item.id),
             }}
-            style={Style.Imagen}
+            style={styles.image}
           />
-          <View style={Style.RenderText}>
+          <View style={styles.renderText}>
             <Text
-              style={Style.TitleApiName}
+              style={styles.titleApiName}
               numberOfLines={2}
               ellipsizeMode={'middle'}>
               {item.name}
@@ -155,7 +149,7 @@ export default class Home extends Component {
             <Text
               numberOfLines={2}
               ellipsizeMode="middle"
-              style={Style.ApiDescription}>
+              style={styles.apiDescription}>
               {item.organization.login}
             </Text>
           </View>
@@ -163,7 +157,7 @@ export default class Home extends Component {
             source={{
               uri: Urls.back,
             }}
-            style={Style.Icon}
+            style={styles.icon}
           />
         </TouchableOpacity>
       </Swipeout>
@@ -172,18 +166,18 @@ export default class Home extends Component {
 
   render() {
     return (
-      <View style={Style.ContainerMain}>
-        <View style={Style.ContainerInput}>
+      <View style={styles.containerMain}>
+        <View style={styles.containerInput}>
           <TextInput
             placeholder={HomeScreen.organizationRepository}
-            style={Style.InputContainer}
+            style={styles.inputContainer}
             onChangeText={this.handleRepositoryPathChange}
           />
           <TouchableOpacity onPress={this.handleAddRepositoryPress}>
-            <Text style={Style.textButton}>+</Text>
+            <Text style={styles.textButton}>+</Text>
           </TouchableOpacity>
         </View>
-        <View style={Style.linhaView} />
+        <View style={styles.linhaView} />
         {this.renderRepositories()}
       </View>
     );
