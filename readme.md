@@ -1,4 +1,4 @@
-# Organization-Github
+# Repository-Github
 Rockeatseat bootcamp, learning to do mobile aplication with react-native
 
 # Screen with changes 
