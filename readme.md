@@ -1,9 +1,6 @@
-# Bootcamp-challenger-02
+# Organization-Github
 Rockeatseat bootcamp, learning to do mobile aplication with react-native
 
-# First screen
-![](src/img/assets/screen01.gif)
-# second screen
-![](src/img/assets/screen02.gif)
+# Screen with changes 
+![](src/img/assets/screen.gif)
 
-second screen in progress...
